@@ -1,18 +1,6 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
 import "./globals.css";
 import Header from "@/components/header";
-
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
 
 export const metadata: Metadata = {
   title: "Coding Exercise",
@@ -28,12 +16,12 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <link
-          href="https://fonts.googleapis.com/css2?family=Spartan:wght@300;400;500;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Spartan:wght@500;700&display=swap"
           rel="stylesheet"
         />
       </head>
       <body
-        className={'antialiased h-[100vh] bg-[hsl(180,_52%,_96%)] font-["Spartan"]'}
+        className={'antialiased h-[100vh] bg-[hsl(180,_52%,_96%)] font-["Spartan"] text-[15px]'}
       >
         <Header />
         {children}
