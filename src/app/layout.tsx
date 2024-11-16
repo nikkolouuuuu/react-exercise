@@ -21,7 +21,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={'antialiased h-[100vh] bg-[hsl(180,_52%,_96%)] font-["Spartan"] text-[15px]'}
+        className={'h-[100vh] bg-[hsl(180,_52%,_96%)] font-["Spartan"] text-[15px]'}
       >
         <Header />
         {children}

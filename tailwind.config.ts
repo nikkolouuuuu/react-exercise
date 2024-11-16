@@ -11,10 +11,6 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
-        darkGrayishCyan: "hsl(180,_14%,_20%)"
-      },
-      backgroundColor: {
-        darkGrayishCyan: "#000"
       }
     },
   },

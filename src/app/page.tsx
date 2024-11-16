@@ -1,15 +1,17 @@
 "use client";
+
 import JobCard from "@/components/card";
 import Filter from "@/components/filter";
 import { getJobData } from "@/services/job";
 import { Card } from "@/types/card.type";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export default function Home() {
   const [cards, setCards] = useState<Card[]>([]);
+  const [filteredCards, setFilteredCards] = useState<Card[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [selectedTags, setSelectedTags] = useState<string[]>(["Frontend"]);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchCard = async () => {
@@ -18,6 +20,7 @@ export default function Home() {
       try {
         const fetchedCard = await getJobData("/data.json");
         setCards(fetchedCard);
+        setFilteredCards(fetchedCard);
         setLoading(false);
       } catch (err: any) {
         setError("Something went wrong.");
@@ -27,11 +30,35 @@ export default function Home() {
     fetchCard();
   }, []);
 
+  useEffect(() => {
+    if (selectedTags.length === 0) {
+      setFilteredCards(cards);
+    } else {
+      setFilteredCards(
+        cards.filter((card) => {
+          const searchableAttributes = [
+            card.role,
+            card.level,
+            ...card.languages,
+            ...card.tools,
+          ];
+          return selectedTags.every((tag) =>
+            searchableAttributes.includes(tag)
+          );
+        })
+      );
+    }
+  }, [selectedTags, cards]);
+
   const changeSelectedTags = (tag: string, isAdding?: boolean) => {
-    let array = selectedTags;
-    if (isAdding) array.push(tag);
-    else array = array.filter((item) => item !== tag);
-    setSelectedTags(array);
+    setSelectedTags((prevTags) => {
+      if (isAdding) return [...prevTags, tag];
+      return prevTags.filter((item) => item !== tag);
+    });
+  };
+
+  const clearAllTags = () => {
+    setSelectedTags([]);
   };
 
   return (
@@ -39,13 +66,13 @@ export default function Home() {
       <Filter
         items={selectedTags}
         onRemoveTag={(tag: string) => changeSelectedTags(tag)}
-        onRemoveAllTags={() => setSelectedTags([])}
+        onRemoveAllTags={clearAllTags}
       />
       <div className="flex flex-col gap-10 md:gap-4 items-center py-12 relative">
         {loading && <div className="p-4 text-center">Loading...</div>}
-        {cards.length > 0 &&
+        {filteredCards.length > 0 &&
           !loading &&
-          cards.map((item, index) => (
+          filteredCards.map((item, index) => (
             <JobCard
               key={index}
               item={item}
@@ -53,7 +80,7 @@ export default function Home() {
               onSelectTag={(tag: string) => changeSelectedTags(tag, true)}
             />
           ))}
-        {cards.length === 0 && !loading && <div>No Results Found</div>}
+        {filteredCards.length === 0 && !loading && <div>No Results Found</div>}
       </div>
     </div>
   );
